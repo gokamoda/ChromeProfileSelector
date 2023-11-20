@@ -1,10 +1,10 @@
 
-local modalKeys = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "0",
+local MODAL_KEYS = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "0",
                     "Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P",
                     "A", "S", "D", "F", "G", "H", "J", "K", "L",
                     "Z", "X", "C", "V", "B", "N", "M"}
 
-local profiles = {
+local CHROME_PROFILES = {
     -- {"Profile Dir", "Display Name"}
     -- Change Display Name to whatever you want to show up on the icon
     -- Then reorder the list in the order you want the icons to appear
@@ -22,7 +22,7 @@ hs.urlevent.httpCallback = function(scheme, host, params, fullURL)
     local iconMargin = 25
 
 
-    numProfiles = #profiles
+    numProfiles = #CHROME_PROFILES
 
     if numProfiles > 0 then
         local appIcons = {}
@@ -65,12 +65,12 @@ hs.urlevent.httpCallback = function(scheme, host, params, fullURL)
         
         bg:setClickCallback(function() chromeProfile() end)
 
-        for num, profile in pairs(profiles) do
+        for num, profile in pairs(CHROME_PROFILES) do
             print(profile[1])
             local appImg = hs.image.imageFromPath("~/Library/Application Support/Google/Chrome/"..profile[1].."/Google Profile Picture.png")
             local appIcon = hs.drawing.image(hs.geometry.size(iconSize-iconMargin, iconSize-iconMargin), appImg)
             if appIcon then
-                local appName = hs.drawing.text(hs.geometry.size(iconSize, boxBorder*2), modalKeys[num].." "..profile[2])
+                local appName = hs.drawing.text(hs.geometry.size(iconSize, boxBorder*2), MODAL_KEYS[num].." "..profile[2])
                 table.insert(appIcons, appIcon)
                 table.insert(appNames, appName)
 
@@ -84,7 +84,7 @@ hs.urlevent.httpCallback = function(scheme, host, params, fullURL)
                 appName:orderAbove(box)
                 appName:show()
 
-                modalDirector:bind({}, modalKeys[num], function() chromeProfile(profile[1], fullURL) end)
+                modalDirector:bind({}, MODAL_KEYS[num], function() chromeProfile(profile[1], fullURL) end)
             end
 
         end 
