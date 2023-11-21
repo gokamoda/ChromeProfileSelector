@@ -59,6 +59,7 @@ hs.urlevent.httpCallback = function(scheme, host, params, fullURL)
             if not(profile and url) then
                 previousWindow:focus()
             end
+            previousWindow:delete()
             
         end
 
