@@ -27,6 +27,7 @@ hs.urlevent.httpCallback = function(scheme, host, params, fullURL)
     if numProfiles > 0 then
         local appIcons = {}
         local appNames = {}
+        local backgrounds = {}
         local modalDirector = hs.hotkey.modal.new()
         local x = screen.x + (screen.w / 2) - (numProfiles * iconSize / 2)
         local y = screen.y + (screen.h / 2) - (iconSize / 2)
@@ -34,9 +35,14 @@ hs.urlevent.httpCallback = function(scheme, host, params, fullURL)
         box:setFillColor({["red"]=0,["blue"]=0,["green"]=0,["alpha"]=0.8}):setFill(true):show()
         box:setRoundedRectRadii(10, 10)
 
-        local bg = hs.drawing.rectangle(hs.geometry.rect(0, 0, screen.x+screen.w, screen.y+screen.h))
-        bg:setFillColor({["red"]=0,["blue"]=0,["green"]=0,["alpha"]=0.4}):setFill(true):show()
-        box.orderAbove(bg)
+        for _, scr in pairs(hs.screen.allScreens()) do
+            local scrFrame = scr:fullFrame()
+            local bg = hs.drawing.rectangle(hs.geometry.rect(scrFrame.x, scrFrame.y, scrFrame.w, scrFrame.h))
+            bg:setFillColor({["red"]=0,["blue"]=0,["green"]=0,["alpha"]=0.2}):setFill(true):show()
+            bg:setClickCallback(function() chromeProfile() end)
+            table.insert(backgrounds, bg)
+            box:orderAbove(bg)
+        end
         
 
         function chromeProfile(profile, url)
@@ -53,18 +59,15 @@ hs.urlevent.httpCallback = function(scheme, host, params, fullURL)
             for _, name in pairs(appNames) do
                 name:delete()
             end
+            for _, bg in pairs(backgrounds) do
+                bg:delete()
+            end
             box:delete()
             modalDirector:exit()
-            bg:delete()
             if not(profile and url) then
                 previousWindow:focus()
             end
-            previousWindow:delete()
-            
         end
-
-        
-        bg:setClickCallback(function() chromeProfile() end)
 
         for num, profile in pairs(CHROME_PROFILES) do
             print(profile[1])
